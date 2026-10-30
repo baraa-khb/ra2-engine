@@ -8928,13 +8928,18 @@ private:
         auto btn = [](int row, const char* s, bool en, int act, ShellPage t) {
             return ShellButton{ {kBtnX, rowY(row), kBtnW, kBtnH}, s, en, act, t }; };
         switch (page_) {
-            case PAGE_SINGLE:   // dialog 0x100
-                return {
-                    btn(0, "New Campaign",    true,  ACT_GOTO,     PAGE_CAMPAIGN),
-                    btn(1, "Load Saved Game", true,  ACT_LOADGAME, PAGE_SINGLE),   // P7
-                    btn(2, "Skirmish",        true,  ACT_SKIRMISH, PAGE_MAIN),
-                    btn(5, "Main Menu",       true,  ACT_GOTO,     PAGE_MAIN),   // W2-UI-22 GUI:MainMenu
-                };
+            case PAGE_SINGLE: {   // dialog 0x100
+                // The campaign mission picker (New Campaign -> PAGE_CAMPAIGN)
+                // is removed from the player's menu; row 0 stays an empty
+                // socket. The --play harness keeps it: the campaign scripts
+                // (scripts/play/m-*.play, ctl-*.play, ...) start missions there.
+                std::vector<ShellButton> v;
+                if (g_play_harness) v.push_back(btn(0, "New Campaign", true, ACT_GOTO, PAGE_CAMPAIGN));
+                v.push_back(btn(1, "Load Saved Game", true,  ACT_LOADGAME, PAGE_SINGLE));   // P7
+                v.push_back(btn(2, "Skirmish",        true,  ACT_SKIRMISH, PAGE_MAIN));
+                v.push_back(btn(5, "Main Menu",       true,  ACT_GOTO,     PAGE_MAIN));   // W2-UI-22 GUI:MainMenu
+                return v;
+            }
             case PAGE_MOVIES:   // dialog 0x101
                 return {
                     btn(0, "Sneak Peeks",  false, ACT_GOTO, PAGE_MAIN),
