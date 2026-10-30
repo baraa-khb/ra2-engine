@@ -1,5 +1,11 @@
 # RA2 Engine
 
+> **Fork of [ra2-engine](https://github.com/omarelarab/ra2-engine) by omarelarab**,
+> who wrote the engine. This fork adds an **iPhone / iPad build** (built on
+> Linux with xtool, see [ios/README.md](ios/README.md)), **touch gestures** in
+> place of the touch command column, and **crisp pixel fonts on phones and
+> tablets**. Those changes are also offered upstream as pull requests.
+
 An **unofficial, open-source engine for Command & Conquer: Red Alert 2 — Yuri's
 Revenge**, for **Windows and Android**. You play the original campaign,
 skirmish and multiplayer with the game files from **your own copy** of the
