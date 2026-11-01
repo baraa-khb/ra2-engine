@@ -1,172 +1,237 @@
 # RA2 Engine
 
-> **Fork of [ra2-engine](https://github.com/omarelarab/ra2-engine) by omarelarab**,
-> who wrote the engine. This fork adds an **iPhone / iPad build** (built on
-> Linux with xtool, see [ios/README.md](ios/README.md)), **touch gestures** in
-> place of the touch command column, and **crisp pixel fonts on phones and
-> tablets**. Those changes are also offered upstream as pull requests.
+> A clean-room, open-source engine for **Command & Conquer: Red Alert 2 and
+> Yuri's Revenge**. You bring the game files from your own copy; it runs the
+> campaign, skirmish and multiplayer on **Windows, Android and iPhone/iPad**.
 
-An **unofficial, open-source engine for Command & Conquer: Red Alert 2 — Yuri's
-Revenge**, for **Windows and Android**. You play the original campaign,
-skirmish and multiplayer with the game files from **your own copy** of the
-game. No game data is included.
+> **This is a fork of [ra2-engine](https://github.com/omarelarab/ra2-engine)
+> by Omar El Arab**, who wrote the engine. The fork adds an **iPhone / iPad
+> port built without a Mac**, **touch gestures** in place of the touch command
+> column, and **crisp pixel fonts on phones and tablets**. All of it is
+> offered upstream as pull requests.
 
-The campaign mission picker (Single Player > New Campaign) is not in the
-menu for now; campaign games saved earlier still open from Load Saved Game.
+**Status: playable beta (0.9).** Allied and Soviet campaigns, skirmish
+against the AI, and LAN / Internet multiplayer for up to 8 players. The
+engine contains no game data and never will: rules, art, sound, music and
+movies come from the player's own legally obtained copy.
 
-The engine is written from scratch in C++17 with SDL2. Its behaviour is
-calibrated against the original game: unit stats come from your own
-`rulesmd.ini`, and the rules that are not in the data files (combat, movement,
-AI, timing and so on) were worked out by studying how the original game
-behaves. The notes in [`docs/re/`](docs/re/) record those findings in our own
-words.
+## Pick your lane
 
-> **Status: playable beta (0.9).** The Allied and Soviet campaigns, skirmish
-> against the AI and LAN / Internet multiplayer work on desktop and Android.
-> It is not yet a 1:1 copy of the original: see [Known limitations](#known-limitations).
+| You are... | Start at |
+|---|---|
+| A player who wants to install and play | [Part 1: For humans](#part-1-for-humans) |
+| A developer who wants to build the code | [Part 1, "Build from source"](#build-from-source) |
+| An AI agent, copilot or coding assistant | [Part 2: For LLMs](#part-2-for-llms-and-ai-agents) |
+
+---
+
+# Part 1: For humans
 
 ## What you need
 
 - **Red Alert 2 with Yuri's Revenge**, installed from a legally owned copy
   (CD, The First Decade, Origin / EA App or Steam). The engine reads the
   Yuri's Revenge data, so a Red Alert 2-only install is not enough.
-- **Windows 10 or later**, or **Android 5.0 or later**.
+- Windows 10+, Android 5.0+, or an iPhone / iPad you can build for (below).
 
-## Install
+## The game files
 
-### 1. Get the game files
-
-Open your Red Alert 2 install folder (the folder that holds `ra2.mix`) and
-copy **every `.mix` and `.csf` file** in it, about 1 GB in total. That is the
-easy way to make sure nothing is missing. You can leave out the `.exe`, `.dll`
-and other files.
-
-What the files are for:
+Open your Red Alert 2 install folder (the one holding `ra2.mix`) and copy
+**every `.mix` and `.csf` file**, about 1 GB total. That is the easy way to
+be sure nothing is missing. The `.exe`, `.dll` and the rest are not used.
 
 | File | Needed? | Used for |
 |---|---|---|
 | `ra2.mix`, `ra2md.mix`, `language.mix`, `multimd.mix` | **required** | rules, art, units, sounds, voices, menus, skirmish maps |
 | `langmd.mix`, `ra2.csf` | recommended | Yuri's Revenge names and text |
-| `theme.mix`, `thememd.mix` | recommended | music (Red Alert 2 and Yuri's Revenge soundtracks) |
-| `Maps01.mix`, `MAPS02.MIX`, `mapsmd03.mix` | recommended | Allied and Soviet campaign maps, default map |
-| `expand01.mix`, `ecache01.mix`, `expandmd01.mix` … | if present | official patch data |
-| `MOVIES01.MIX`, `MOVIES02.MIX`, `MOVMD03.MIX` | if present | campaign cutscenes; some digital versions ship them as tiny placeholder files |
+| `theme.mix`, `thememd.mix` | recommended | music (both soundtracks) |
+| `Maps01.mix`, `MAPS02.MIX`, `mapsmd03.mix` | recommended | campaign maps, default map |
+| `expand01.mix`, `ecache01.mix`, ... | if present | official patch data |
+| `MOVIES01.MIX`, `MOVMD03.MIX`, other `movies*` | if present | campaign cutscenes |
+| `*.bik` | if present | cutscene videos (go in a `Movies/` folder on mobile) |
 
-Only the four required files stop the game from starting. Without the
-others you lose that part of the game: music, campaigns, cutscenes or patch
-rules. If a required file is missing, the game opens a **GAME FILES NEEDED**
-page that lists what is missing and where it looked.
+Only the four required files stop the game from starting. If something is
+missing, the game opens a **GAME FILES NEEDED** page that lists what and
+where it looked.
 
-### 2a. Windows
+## Install
 
-1. Download the Windows zip from the [Releases](../../releases) page and unzip
-   it anywhere, or [build from source](#build-from-source).
-2. Either put the game files in the same folder as `ra2game.exe`, or just start
-   `ra2game.exe`. If it cannot find the files, the **GAME FILES NEEDED** page
-   has a **BROWSE** button to pick your Red Alert 2 folder, and it remembers
-   the choice.
+### Windows
 
-The game also finds a standard retail install from the Windows registry, so on
-a PC that already has Red Alert 2 installed it usually just starts.
+1. Download the zip from the [Releases](../../releases) page and unzip it
+   anywhere (or [build from source](#build-from-source)).
+2. Put the game files next to `ra2game.exe`, or just start it: a **BROWSE**
+   button on the GAME FILES NEEDED page picks your Red Alert 2 folder, and
+   the choice is remembered. A standard retail install is also found through
+   the registry, so on a PC that has the game it usually just starts.
 
-### 2b. Android
+### Android
 
 1. Install the APK from the [Releases](../../releases) page.
-2. Copy the game files to the phone, for example into `Download/RA2`, using a
-   USB cable (file transfer) or any file manager.
-3. Open **RA2 Engine** and tap **Import game files**. Pick the `RA2` folder
-   and allow access. The app copies the files into its own storage (about a
-   minute) and starts the game.
+2. Copy the game files to the phone (for example `Download/RA2`) and open
+   **RA2 Engine**. Tap **Import game files**, pick the folder, done.
 
-To add or replace files later (music, campaign maps, movies), put them in the
-same folder and import again: long-press the app icon, or use **Options →
-Game Files** in the game.
+### iPhone and iPad (experimental, this fork)
 
-The full player guide covers controls (mouse and touch), movies, network play,
-saves and troubleshooting: **[docs/INSTALL.md](docs/INSTALL.md)**.
+No Mac, no Xcode, no App Store: the port builds with
+[xtool](https://xtool.sh) on **Linux, macOS or Windows (WSL)** and installs
+on the device with your own Apple ID (a free one works). Then import the
+game files in the app through the iOS Files picker.
+
+```sh
+git clone https://github.com/baraa-khb/ra2-engine && cd ra2-engine
+ios/scripts/build.sh          # asks everything it needs, then builds
+```
+
+Run it with no arguments and it walks you through the whole setup: xtool,
+the SDK from your Xcode `.xip` download, login, your Red Alert 2 folder, and
+installing on the connected device. The full story, including what goes
+where on the device and the current limitations, is in
+**[ios/README.md](ios/README.md)**.
 
 ## Multiplayer
 
-- **LAN:** games on the same Wi-Fi or network show up automatically, or join by
-  IP address.
-- **Internet:** through a small lobby / relay server that you host yourself
-  (one binary, no account system). See **[docs/SERVER.md](docs/SERVER.md)**.
+- **LAN:** games on the same network show up automatically; on iOS, join by
+  address or use the lobby server (see the limitations in ios/README.md).
+- **Internet:** a small lobby / relay server you host yourself, one binary,
+  no accounts: **[docs/SERVER.md](docs/SERVER.md)**.
 - Up to 8 players, AI slots, the original game types, alliances, chat and
-  beacons. Every player must run the same engine version and the same game
-  files; the lobby checks both.
+  beacons. Everyone needs the same engine version and the same game files;
+  the lobby checks both.
+
+The complete player guide (controls, movies, saves, troubleshooting) is
+**[docs/INSTALL.md](docs/INSTALL.md)**.
 
 ## Build from source
 
-Requirements: CMake 3.20+, Ninja, a C++17 compiler (MinGW-w64 GCC on Windows),
-and Python 3 for the tools. SDL2 2.30.9 is fetched automatically.
+Desktop (CMake 3.20+, Ninja, a C++17 compiler; Python 3 for the tools;
+SDL2 2.30.9 is fetched automatically):
 
 ```sh
 cmake -S . -B build -G Ninja -DCMAKE_BUILD_TYPE=RelWithDebInfo
 cmake --build build
-build/ra2game        # the game (ra2engine is the console build)
-build/ra2assets_tests  # the unit tests
+build/ra2game         # the game (ra2engine is the console build)
+build/ra2assets_tests # the unit tests
 ```
 
-Android APK (JDK 17+, Android SDK and NDK r27c). Configure the desktop build
-first, because the Android build reuses the SDL2 source it downloads (or set
-`RA2_SDL2_SRC_DIR` to an SDL 2.30.9 source folder):
+Android APK (JDK 17+, Android SDK and NDK r27c; configure the desktop build
+first, or point `RA2_SDL2_SRC_DIR` at an SDL 2.30.9 source folder):
 
 ```sh
-cd android
-./gradlew assembleDebug
+cd android && ./gradlew assembleDebug
 ```
 
-iPhone / iPad (experimental), from Linux, macOS or Windows (inside WSL) with
-[xtool](https://xtool.sh) (SwiftPM + the Darwin SDK): no Mac, no Xcode. In the
-app you import your game files (the same `.mix` / `.csf` files as above)
-through the iOS Files picker; setup, the file list and the limitations are in
-**[ios/README.md](ios/README.md)**. For a personal test build that bundles
-your own files and installs on the device in one command:
+iPhone and iPad: see [above](#iphone-and-ipad-experimental-this-fork), or
+one command for a personal build that bundles your own game files and
+installs on the device:
 
 ```sh
 ios/scripts/build.sh --game-data /path/to/your/RA2 --install
 ```
 
-Developer documentation, including the test and determinism gates, the
-`--play` script harness and the architecture notes, is in
-**[docs/DEVELOPMENT.md](docs/DEVELOPMENT.md)**.
+Developer reference, test and determinism gates, and the architecture
+notes: **[docs/DEVELOPMENT.md](docs/DEVELOPMENT.md)**.
 
 ## Known limitations
 
-- Yuri's faction is not playable (Allied and Soviet only); the Yuri's Revenge
-  campaign is not included in the campaign menu yet.
-- Some details still differ from the original: for example units tilting on
-  slopes, the Siege Chopper deploy, the Spy Plane and the random map
-  generator.
-- Phone-versus-PC multiplayer is switched off by default until it has been
-  tested more on real phones.
+- In this fork the campaign mission picker (Single Player > New Campaign)
+  is hidden while it is being reworked; saved campaigns still open.
+- Yuri's faction is not playable (Allied and Soviet only).
+- Some details still differ from the original: units tilting on slopes, the
+  Siege Chopper deploy, the Spy Plane, the random map generator.
+- Phone-versus-PC multiplayer is off by default until it is tested more.
 - Saved games do not carry over between engine versions yet.
+
+---
+
+# Part 2: For LLMs and AI agents
+
+You are reading this because a model was pointed at this repository. This
+section is written for you, and everything in it is a hard requirement, not
+a suggestion.
+
+## What this repository is
+
+A from-scratch C++17 / SDL2 engine that runs the original Red Alert 2 and
+Yuri's Revenge campaigns, skirmish and multiplayer using the player's own
+game files. It ships **no game data**: no `.mix` archives, art, audio, maps
+or rules. Behaviour is calibrated against the original game; the findings
+live in `docs/re/` in our own words. Licence: 0BSD, see LICENSE and
+THIRD_PARTY_NOTICES.md.
+
+## Repository map
+
+| Path | What lives there |
+|---|---|
+| `engine/` | the game engine: `.cpp` units plus `.inc` include-units (platform code in `platform*.cpp`, networking in `mp/`, touch input in `touch_*`) |
+| `src/` | ra2assets: the asset pipeline that turns player files into engine data |
+| `tests/` | 1134 test cases in 114 files (doctest), from unit to real-play lockstep |
+| `android/` | Gradle project, JNI bridge, touch UI |
+| `ios/` | xtool build scripts, Info.plist, setup guide (ios/README.md) |
+| `docs/` | INSTALL.md (player guide), SERVER.md (lobby server), DEVELOPMENT.md (developer reference), `re/` (original-behaviour notes) |
+| `tools/`, `cmake/` | build tooling; `cmake/sdl2_pin.cmake` pins SDL2 2.30.9 everywhere |
+
+## Build and test (verify before you claim anything works)
+
+```sh
+cmake -S . -B build -G Ninja -DCMAKE_BUILD_TYPE=RelWithDebInfo && cmake --build build
+build/ra2assets_tests                     # all tests
+build/ra2assets_tests --test-case="net*"  # one module (fast)
+```
+
+Android: `cd android && ./gradlew assembleDebug`. iOS:
+`ios/scripts/build.sh` (no arguments runs the guided setup; see
+ios/README.md). CI-grade gates (determinism, golden bytes, the `--play`
+harness) are described in docs/DEVELOPMENT.md; read it before touching
+`engine/`.
+
+## Hard rules
+
+1. **Never commit game data.** `*.mix`, `*.csf`, `*.bik`, `*.aud` and
+   friends are Electronic Arts assets; `.gitignore` blocks them on purpose.
+   A Xcode `.xip` is each user's personal Apple download; it never enters
+   the repository either.
+2. **Do not "fix" the ignored folders.** `ios/local/`, `ios/generated/`,
+   `ios/Vendor/`, `build/` are machine-local or personal by design.
+3. **New platform behaviour goes behind guards.** iOS code is `RA2_IOS`
+   (defined only by Package.swift); behaviour shared with Android is
+   `defined(__ANDROID__) || defined(RA2_IOS)`. Desktop paths must stay
+   untouched.
+4. **Match the original game, never copy from it.** Findings in `docs/re/`
+   are our own words; EA code, assets and text never enter this repo.
+5. **Tests are part of done.** Engine changes ship with cases in `tests/`;
+   run the suite before you say a change works.
+6. **Dev servers bind to 127.0.0.1.** The LAN discovery broadcast is game
+   networking, not an excuse for a wildcard bind anywhere else.
+7. **Plain text only in code, docs and commits:** ASCII, straight quotes,
+   no em dashes, no emoji.
+
+## Where to go next
+
+- `docs/DEVELOPMENT.md` before changing `engine/`
+- `docs/re/<topic>.md` for how the original game behaves in an area
+- `ios/README.md` for the iOS port, `android/` for the Android app
+- Git log for the W-numbered work-stream convention used in the docs
+
+---
 
 ## Legal
 
 This is a non-commercial fan project. It contains an engine only and **does
 not include or distribute any Command & Conquer: Red Alert 2 / Yuri's
-Revenge game data** — no art, sounds, music, movies, maps or rules files. The
-engine runs only on game files that the player supplies from their own legally
-obtained copy.
+Revenge game data**, no art, sounds, music, movies, maps or rules files.
+The engine runs only on game files that the player supplies from their own
+legally obtained copy.
 
 "Command & Conquer", "Red Alert" and "Yuri's Revenge" are trademarks of
 Electronic Arts Inc. This project is not affiliated with, endorsed by or
-sponsored by Electronic Arts. The art, logos, sounds and text shown while
-playing come from the player's own files. The notes in `docs/re/` describe how
-the original game behaves, in our own words, so that the engine can match it;
-they contain no Electronic Arts source code, art, audio or map files.
+sponsored by Electronic Arts.
 
-## License
+## Licence
 
-RA2 Engine is free for everyone, under the **Zero-Clause BSD licence**
-(0BSD). The full text is in [LICENSE](LICENSE).
-
-Anyone may use, copy, change and share it, for any purpose, with or without
-payment, and with no conditions at all. The software comes as is, without any
-warranty.
-
-Author: Omar El Arab
-
-Third-party components keep their own licences; they are listed in
+Zero-Clause BSD (0BSD). The full text is in [LICENSE](LICENSE); third-party
+components keep their own licences, listed in
 [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md).
+
+Engine author: **Omar El Arab** ([omarelarab/ra2-engine](https://github.com/omarelarab/ra2-engine)).
+Fork (iOS port, touch gestures, mobile fonts): Baraa Al Khateeb.
