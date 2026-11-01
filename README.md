@@ -58,7 +58,7 @@ where it looked.
 
 ### Windows
 
-1. Download the zip from the [Releases](../../releases) page and unzip it
+1. Download the zip from the [Releases](https://github.com/omarelarab/ra2-engine/releases) page and unzip it
    anywhere (or [build from source](#build-from-source)).
 2. Put the game files next to `ra2game.exe`, or just start it: a **BROWSE**
    button on the GAME FILES NEEDED page picks your Red Alert 2 folder, and
@@ -67,7 +67,7 @@ where it looked.
 
 ### Android
 
-1. Install the APK from the [Releases](../../releases) page.
+1. Install the APK from the [Releases](https://github.com/omarelarab/ra2-engine/releases) page.
 2. Copy the game files to the phone (for example `Download/RA2`) and open
    **RA2 Engine**. Tap **Import game files**, pick the folder, done.
 
